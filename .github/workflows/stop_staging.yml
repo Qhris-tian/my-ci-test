@@ -1,4 +1,4 @@
-name: 'On-Demand: Start Staging'
+name: 'On-Demand: Stop Staging'
 
 on:
   workflow_dispatch:
@@ -21,10 +21,14 @@ jobs:
           role-to-assume: arn:aws:iam::064566626562:role/github-actions-app-repo-role
           aws-region: eu-north-1
 
-      - name: Trigger Step Function Lease
+      - name: Invoke Stop Lambda
         run: |
-          echo "Starting 2-hour lease via Step Function..."
-          aws stepfunctions start-execution \
-            --state-machine-arn "arn:aws:states:eu-north-1:064566626562:stateMachine:staging-app-lease"
+          echo "Sending 'stop' command to staging-app-scheduler..."
+          aws lambda invoke \
+            --function-name staging-app-scheduler \
+            --payload '{"action": "stop"}' \
+            --cli-binary-format raw-in-base64-out \
+            response.json
 
-          echo "Lease started. Server will auto-stop in 2 hours."
+          echo "Lambda response:"
+          cat response.json
