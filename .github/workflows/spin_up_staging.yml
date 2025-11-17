@@ -1,0 +1,30 @@
+name: 'On-Demand: Start Staging'
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  spin-up-staging:
+    runs-on: ubuntu-latest
+    steps:
+      - name: '1. Configure AWS Credentials'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::064566626562:role/github-actions-app-repo-role
+          aws-region: eu-north-1
+
+      - name: '2. Invoke Start Lambda'
+        run: |
+          echo "Sending 'start' command to staging-app-scheduler..."
+          aws lambda invoke \
+            --function-name staging-app-scheduler \
+            --payload '{"action": "start"}' \
+            --cli-binary-format raw-in-base64-out \
+            response.json
+
+          echo "Lambda response:"
+          cat response.json
