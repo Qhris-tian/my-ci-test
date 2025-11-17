@@ -11,13 +11,16 @@ jobs:
   spin-up-staging:
     runs-on: ubuntu-latest
     steps:
-      - name: '1. Configure AWS Credentials'
+      - name: 'DEBUG: Print GitHub Context'
+        run: echo "This action is running from: ${{ github.repository }}"
+
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::064566626562:role/github-actions-app-repo-role
           aws-region: eu-north-1
 
-      - name: '2. Invoke Start Lambda'
+      - name: Invoke Start Lambda
         run: |
           echo "Sending 'start' command to staging-app-scheduler..."
           aws lambda invoke \
