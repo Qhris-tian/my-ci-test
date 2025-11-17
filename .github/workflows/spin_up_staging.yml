@@ -11,8 +11,9 @@ jobs:
   spin-up-staging:
     runs-on: ubuntu-latest
     steps:
-      - name: 'DEBUG: Print GitHub Context'
-        run: echo "This action is running from: ${{ github.repository }}"
+      - name: Print GitHub Context
+        run: |
+          echo "This action is running from: ${{ github.repository }}"
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
