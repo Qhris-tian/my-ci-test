@@ -23,12 +23,8 @@ jobs:
 
       - name: Invoke Start Lambda
         run: |
-          echo "Sending 'start' command to staging-app-scheduler..."
-          aws lambda invoke \
-            --function-name staging-app-scheduler \
-            --payload '{"action": "start"}' \
-            --cli-binary-format raw-in-base64-out \
-            response.json
+          echo "Starting 2-hour lease via Step Function..."
+          aws stepfunctions start-execution \
+            --state-machine-arn "arn:aws:states:eu-north-1:064566626562:stateMachine:staging-app-lease"
 
-          echo "Lambda response:"
-          cat response.json
+          echo "Lease started. Server will auto-stop in 2 hours."
